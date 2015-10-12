@@ -46,6 +46,10 @@ class MY_Controller extends CI_Controller {
     {
     }
     
+    public function __get_page_name()
+    {
+    }
+    
     public function __get_sidebar()
     {
         $data = array(
@@ -60,7 +64,6 @@ class MY_Controller extends CI_Controller {
     public function __get_header()
     {
         $data = array();
-        //TODO 设置header
         return $this->parser->parse('header', $data, TRUE);
     }
 
@@ -92,6 +95,7 @@ class MY_Controller extends CI_Controller {
         $this->__addLibraries();
         
         $data = array(
+            'page_name' => $this->__get_page_name(),
             'header' => $header,
             'sidebar' => $sidebar,
             'content' => $content,
