@@ -1,8 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+require_once( APPPATH . 'libraries/Draw_result_rbb.php' );
+
 class LO_Controller extends MY_Controller {
     protected $counter;
+    protected $drawResults;
     
     public function __construct(){
         parent::__construct();
@@ -15,16 +18,19 @@ class LO_Controller extends MY_Controller {
         $counter = array();
         for ($index=1; $index<=33; $index++) $counter[ $index ] = 0;
         for ($index=1; $index<=16; $index++) $counter[ 100+$index ] = 0;
-        $drawResults = $this->draw_result_model->get_all_draw_results();
-        foreach ($drawResults as $id => $drawResult)
+        $drawResultArrays = $this->draw_result_model->get_all_draw_results();
+        $this->drawResults = array();
+        foreach ($drawResultArrays as $id => $drawResultArray)
         {
-            $counter[$drawResult['red_ball_1']]++;
-            $counter[$drawResult['red_ball_2']]++;
-            $counter[$drawResult['red_ball_3']]++;
-            $counter[$drawResult['red_ball_4']]++;
-            $counter[$drawResult['red_ball_5']]++;
-            $counter[$drawResult['red_ball_6']]++;
-            $counter[$drawResult['blue_ball']+100]++;
+            $drawResult = new Draw_result_rbb($drawResultArray);
+            $counter[$drawResult->redBall1]++;
+            $counter[$drawResult->redBall2]++;
+            $counter[$drawResult->redBall3]++;
+            $counter[$drawResult->redBall4]++;
+            $counter[$drawResult->redBall5]++;
+            $counter[$drawResult->redBall6]++;
+            $counter[$drawResult->blueBall+100]++;
+            $this->drawResults[$drawResult->id] = $drawResult;
         }
         $this->counter = $counter;
     }

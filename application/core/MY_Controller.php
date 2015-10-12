@@ -97,7 +97,7 @@ class MY_Controller extends CI_Controller {
         $data = array(
             'page_name' => $this->__get_page_name(),
             'header' => $header,
-            'sidebar' => $sidebar,
+            'sidebar' => '', //$sidebar,
             'content' => $content,
             'footer' => $footer,
             'cssLibraries' => $this->cssLibraries,

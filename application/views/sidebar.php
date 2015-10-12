@@ -5,6 +5,7 @@
           <!-- Sidebar Menu -->
           <ul class="sidebar-menu">
             <li class="{active_histogram}"><a href="#"><i class="fa fa-bar-chart"></i> <span>{histogram}</span></a></li>
+            <li class="{active_balldetail}"><a href="#"><i class="fa fa-bar-chart"></i> <span>{balldetail}</span></a></li>
           </ul><!-- /.sidebar-menu -->
         </section>
         <!-- /.sidebar -->
