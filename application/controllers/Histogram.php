@@ -8,24 +8,39 @@ class Histogram extends LO_Controller {
         parent::__construct();
     }
     
+    public function __addLibraries()
+    {
+        $this->__addJsLibrary('Echarts', '2.2.7', '/assets/echarts-all.js');
+    }
+    
     public function __get_content()
     {
         //生成标签
         $labelsRed = '';
         $labelsBlue = '';
+        $labelsMixed = '';
+        $colors = '';
         for ($index=1; $index<=33; $index++)
         {
-            if ($index != 1) $labelsRed .= ',';
+            if ($index != 1)
+            {
+                $labelsRed .= ',';
+                $colors .= ',';
+            }
             $labelsRed .= $index;
+            $colors .= '\'#a00000\'';
         }
         for ($index=1; $index<=16; $index++)
         {
             if ($index != 1) $labelsBlue .= ',';
             $labelsBlue .= $index;
+            $colors .= ',\'#0000a0\'';
         }
+        $labelsMixed = $labelsRed . ',' . $labelsBlue;
         //生成频数
         $countersCSVRed = '';
         $countersCSVBlue = '';
+        $countersMixed = '';
         for ($index=1; $index<=33; $index++)
         {
             if ($index != 1) $countersCSVRed .= ',';
@@ -36,14 +51,18 @@ class Histogram extends LO_Controller {
             if ($index != 1) $countersCSVBlue .= ',';
             $countersCSVBlue .= $this->counter[100+$index];
         }
+        $countersMixed = $countersCSVRed . ',' . $countersCSVBlue;
         
         $data = array(
             'labelsRed' => $labelsRed,
             'countersRed' => $countersCSVRed,
-            'labelsBlue' => $labelsBlue,
-            'countersBlue' => $countersCSVBlue
+            'labelsBlue' => $labelsMixed,
+            'countersBlue' => $countersCSVBlue,
+            'labels' => $labelsMixed,
+            'counters' => $countersMixed,
+            'colors' => $colors
         );
-        return $this->parser->parse('histogram_content', $data, TRUE);
+        return $this->parser->parse('echarts_content', $data, TRUE);
     }
     
     public function __get_active_menu_item()
