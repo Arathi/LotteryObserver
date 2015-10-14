@@ -10,7 +10,7 @@ class Histogram extends LO_Controller {
     
     public function __addLibraries()
     {
-        $this->__addJsLibrary('Echarts', '2.2.7', '/assets/echarts-all.js');
+        $this->__addJsLibrary('Echarts', '2.2.7', '/assets/echarts.min.js');
     }
     
     public function __get_content()
