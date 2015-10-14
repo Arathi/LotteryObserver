@@ -48,21 +48,40 @@ class Balldetail extends LO_Controller {
             $days .= $day;
         }
         $counterArray = array();
-        for ($month = 1; $month <= 31; $month++) $counterArray[$month] = 0;
+        $dcArray = array();
+        for ($day = 1; $day <= 31; $day++)
+        {
+            $dcArray[$day] = 0;
+            $counterArray[$day] = 0;
+        }
         foreach ($this->drawResults as $drawResult)
         {
-            $counterArray[ $drawResult->dayOfMonth ]++;
+            $dcArray[ $drawResult->dayOfMonth ]++;
+            if ($drawResult->redBall1 == $this->ballNumber ||
+                $drawResult->redBall2 == $this->ballNumber ||
+                $drawResult->redBall3 == $this->ballNumber ||
+                $drawResult->redBall4 == $this->ballNumber ||
+                $drawResult->redBall5 == $this->ballNumber ||
+                $drawResult->redBall6 == $this->ballNumber
+            ) $counterArray[$drawResult->dayOfMonth]++; 
         }
         $counters = '';
+        $proportions = '';
         for ($d=1; $d<=31; $d++)
         {
-            if ($d!=1) $counters .= ',';
+            if ($d!=1)
+            {
+                $counters .= ',';
+                $proportions .= ',';
+            }
             $counters .= $counterArray[$d];
+            $proportions .= 100 * $counterArray[$d] / $dcArray[$d];
         }
         $dataChart2 = array(
             'chart_name_2' => '日期分布',
             'days' => $days,
-            'counters_2' => $counters
+            'counters_2' => $counters,
+            'proportion_2' => $proportions
         );
         $data = array_merge($data, $dataChart2);
         
@@ -70,7 +89,7 @@ class Balldetail extends LO_Controller {
         return $this->parser->parse('balldetail_content', $data, TRUE);
     }
     
-    public function month($ballNumber)
+    public function view($ballNumber)
     {
         $this->ballNumber = $ballNumber;
         $this->index();
