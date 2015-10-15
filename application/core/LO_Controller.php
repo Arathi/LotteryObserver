@@ -39,7 +39,8 @@ class LO_Controller extends MY_Controller {
     
     public function __addLibraries()
     {
-        $this->__addJsLibrary('ChartJS', '', '/assets/AdminLTE/plugins/chartjs/Chart.min.js');
-        $this->__addJsLibrary('Fast Click', '', '/assets/AdminLTE/plugins/fastclick/fastclick.min.js');
+        //$this->__addJsLibrary('ChartJS', '', '/assets/AdminLTE/plugins/chartjs/Chart.min.js');
+        //$this->__addJsLibrary('Fast Click', '', '/assets/AdminLTE/plugins/fastclick/fastclick.min.js');
+        $this->__addJsLibrary('ECharts', '2.2.7', '/assets/echarts.min.js');
     }
 }

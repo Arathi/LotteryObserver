@@ -10,29 +10,43 @@ class Balldetail extends LO_Controller {
         parent::__construct();
     }
     
-    public function __addLibraries()
-    {
-        $this->__addJsLibrary('ECharts', '2.2.7', '/assets/echarts.min.js');
-        //$this->__addJsLibrary('ECharts', '2.2.7', '/assets/echarts-all.js');
-    }
+    //public function __addLibraries()
+    //{
+    //    $this->__addJsLibrary('ECharts', '2.2.7', '/assets/echarts-all.js');
+    //}
     
     public function __get_content()
     {
+        $isRedBall = TRUE;
+        $ballNumber = $this->ballNumber;
+        if ($this->ballNumber>100)
+        {
+            $isRedBall = FALSE;
+            $ballNumber = $this->ballNumber - 100;
+        }
+        $ball_name = ($isRedBall) ? ("红球" . $ballNumber) : ("蓝球" . $ballNumber);
         $data = array(
-            'ball_name' => '红球'.$this->ballNumber
+            'ball_name' => $ball_name
         );
         //月份
         $counterArray = array();
         for ($month = 1; $month <= 12; $month++) $counterArray[$month] = 0;
         foreach ($this->drawResults as $drawResult)
         {
-            if ($drawResult->redBall1 == $this->ballNumber ||
-                $drawResult->redBall2 == $this->ballNumber ||
-                $drawResult->redBall3 == $this->ballNumber ||
-                $drawResult->redBall4 == $this->ballNumber ||
-                $drawResult->redBall5 == $this->ballNumber ||
-                $drawResult->redBall6 == $this->ballNumber
-            ) $counterArray[$drawResult->month]++;
+            if ($isRedBall)
+            {
+                if ($drawResult->redBall1 == $ballNumber ||
+                    $drawResult->redBall2 == $ballNumber ||
+                    $drawResult->redBall3 == $ballNumber ||
+                    $drawResult->redBall4 == $ballNumber ||
+                    $drawResult->redBall5 == $ballNumber ||
+                    $drawResult->redBall6 == $ballNumber
+                ) $counterArray[$drawResult->month]++;
+            }
+            else
+            {
+                if ($drawResult->blueBall) $counterArray[$drawResult->month]++;
+            }
         }
         $counters = '';
         $colors = '';
@@ -44,7 +58,7 @@ class Balldetail extends LO_Controller {
                 $colors .= ',';
             }
             $counters .= $counterArray[$month];
-            $colors .= "'" . random_color() . "'";
+            $colors .= "'" . random_color(0, 128, 0, 128, 0, 128) . "'";
         }
         $dataChart1 = array(
             'chart_name_1' => '月份分布',
@@ -70,13 +84,20 @@ class Balldetail extends LO_Controller {
         foreach ($this->drawResults as $drawResult)
         {
             $dcArray[ $drawResult->dayOfMonth ]++;
-            if ($drawResult->redBall1 == $this->ballNumber ||
-                $drawResult->redBall2 == $this->ballNumber ||
-                $drawResult->redBall3 == $this->ballNumber ||
-                $drawResult->redBall4 == $this->ballNumber ||
-                $drawResult->redBall5 == $this->ballNumber ||
-                $drawResult->redBall6 == $this->ballNumber
-            ) $counterArray[$drawResult->dayOfMonth]++; 
+            if ($isRedBall)
+            {
+                if ($drawResult->redBall1 == $ballNumber ||
+                    $drawResult->redBall2 == $ballNumber ||
+                    $drawResult->redBall3 == $ballNumber ||
+                    $drawResult->redBall4 == $ballNumber ||
+                    $drawResult->redBall5 == $ballNumber ||
+                    $drawResult->redBall6 == $ballNumber
+                ) $counterArray[$drawResult->dayOfMonth]++;
+            }
+            else
+            {
+                if ($drawResult->blueBall == $ballNumber) $counterArray[$drawResult->dayOfMonth]++;
+            }
         }
         $counters = '';
         $proportions = '';
@@ -88,14 +109,13 @@ class Balldetail extends LO_Controller {
                 $proportions .= ',';
             }
             $counters .= $counterArray[$d];
-            $proportions .= 100 * $counterArray[$d] / $dcArray[$d];
+            $proportions .= 100.0 * $counterArray[$d] / $dcArray[$d];
         }
         $dataChart2 = array(
             'chart_name_2' => '日期分布',
             'days' => $days,
             'counters_2' => $counters,
-            'proportion_2' => $proportions,
-            'colors_2' => $colors
+            'proportion_2' => $proportions
         );
         $data = array_merge($data, $dataChart2);
         
