@@ -2,7 +2,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Echarts测试
+          {chart_name}
           </h1>
         </section>
 
@@ -60,7 +60,7 @@ option = {
     ],
     series: [
         {
-            name: '双色球频数统计',
+            name: '{chart_name}',
             type: 'bar',
             itemStyle: {
                 normal: {
@@ -79,6 +79,11 @@ option = {
                 }
             },
             data: [{counters}]
+        },
+        {
+            name:'理论平均频数',
+            type: 'line',
+            data: [{theory_avg}]
         }
     ]
 };

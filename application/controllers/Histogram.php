@@ -20,21 +20,33 @@ class Histogram extends LO_Controller {
         $labelsBlue = '';
         $labelsMixed = '';
         $colors = '';
+        $theory_avg_red = count($this->drawResults) * 6 / 33;
+        $actual_avg_red = 0;
+        $theory_avg_blue = count($this->drawResults) / 16;
+        $actual_avg_blue = 0;
+        $theory_avg_arr = '';
+        $actual_avg_arr = '';
         for ($index=1; $index<=33; $index++)
         {
             if ($index != 1)
             {
                 $labelsRed .= ',';
                 $colors .= ',';
+                $theory_avg_arr .= ',';
             }
             $labelsRed .= $index;
             $colors .= '\'#a00000\'';
+            $theory_avg_arr .= $theory_avg_red;
         }
         for ($index=1; $index<=16; $index++)
         {
-            if ($index != 1) $labelsBlue .= ',';
+            if ($index != 1)
+            {
+                $labelsBlue .= ',';
+            }
             $labelsBlue .= $index;
             $colors .= ',\'#0000a0\'';
+            $theory_avg_arr .= ',' . $theory_avg_blue;
         }
         $labelsMixed = $labelsRed . ',' . $labelsBlue;
         //生成频数
@@ -43,24 +55,43 @@ class Histogram extends LO_Controller {
         $countersMixed = '';
         for ($index=1; $index<=33; $index++)
         {
-            if ($index != 1) $countersCSVRed .= ',';
+            if ($index != 1)
+            {
+                $countersCSVRed .= ',';
+            }
             $countersCSVRed .= $this->counter[$index];
+            $actual_avg_red += $this->counter[$index];
         }
         for ($index=1; $index<=16; $index++)
         {
-            if ($index != 1) $countersCSVBlue .= ',';
+            if ($index != 1)
+            {
+                $countersCSVBlue .= ',';
+            }
             $countersCSVBlue .= $this->counter[100+$index];
+            $actual_avg_blue += $this->counter[100+$index];
         }
         $countersMixed = $countersCSVRed . ',' . $countersCSVBlue;
         
+        $actual_avg_red /= 33.0;
+        $actual_avg_blue /= 16.0;
+        for ($index=1; $index<=33; $index++)
+        {
+            if ($index != 1) $actual_avg_arr .= ',';
+            $actual_avg_arr .= $actual_avg_red;
+        }
+        for ($index=1; $index<=33; $index++)
+        {
+            $actual_avg_arr .= ',' . $actual_avg_blue;
+        }
+        
         $data = array(
-            'labelsRed' => $labelsRed,
-            'countersRed' => $countersCSVRed,
-            'labelsBlue' => $labelsMixed,
-            'countersBlue' => $countersCSVBlue,
+            'chart_name' => '红蓝球频率直方图',
             'labels' => $labelsMixed,
             'counters' => $countersMixed,
-            'colors' => $colors
+            'colors' => $colors,
+            'theory_avg' => $theory_avg_arr,
+            //'actual_avg' => $actual_avg_arr
         );
         return $this->parser->parse('echarts_content', $data, TRUE);
     }
