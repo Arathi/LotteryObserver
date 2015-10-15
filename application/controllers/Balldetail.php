@@ -10,6 +10,12 @@ class Balldetail extends LO_Controller {
         parent::__construct();
     }
     
+    public function __addLibraries()
+    {
+        $this->__addJsLibrary('ECharts', '2.2.7', '/assets/echarts.min.js');
+        //$this->__addJsLibrary('ECharts', '2.2.7', '/assets/echarts-all.js');
+    }
+    
     public function __get_content()
     {
         $data = array(
@@ -29,14 +35,21 @@ class Balldetail extends LO_Controller {
             ) $counterArray[$drawResult->month]++;
         }
         $counters = '';
+        $colors = '';
         for ($month = 1; $month <= 12; $month++)
         {
-            if ($month!=1) $counters .= ',';
+            if ($month!=1)
+            {
+                $counters .= ',';
+                $colors .= ',';
+            }
             $counters .= $counterArray[$month];
+            $colors .= "'" . random_color() . "'";
         }
         $dataChart1 = array(
             'chart_name_1' => '月份分布',
-            'counters_1' => $counters
+            'counters_1' => $counters,
+            'colors_1' => $colors
         );
         $data = array_merge($data, $dataChart1);
         
@@ -81,7 +94,8 @@ class Balldetail extends LO_Controller {
             'chart_name_2' => '日期分布',
             'days' => $days,
             'counters_2' => $counters,
-            'proportion_2' => $proportions
+            'proportion_2' => $proportions,
+            'colors_2' => $colors
         );
         $data = array_merge($data, $dataChart2);
         

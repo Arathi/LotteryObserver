@@ -21,11 +21,11 @@
                 </div>
                 <div class="box-body">
                   <div class="chart">
-                    <canvas id="barChartMonth" style="height:230px"></canvas>
+                    <!-- <canvas id="barChartMonth" style="height:230px"></canvas> -->
+                    <div id="chartMonth" style="height:512px"></div>
                   </div>
                 </div><!-- /.box-body -->
               </div><!-- /.box -->
-              
               <div class="box box-success">
                 <div class="box-header with-border">
                   <h3 class="box-title">{chart_name_2}</h3>
@@ -36,7 +36,8 @@
                 </div>
                 <div class="box-body">
                   <div class="chart">
-                    <canvas id="barChartDay" style="height:230px"></canvas>
+                    <!-- <canvas id="barChartMonth" style="height:230px"></canvas> -->
+                    <div id="chartDay" style="height:512px"></div>
                   </div>
                 </div><!-- /.box-body -->
               </div><!-- /.box -->
@@ -44,93 +45,130 @@
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
     <script>
-      $(function () {
-        /* ChartJS
-         * -------
-         * Here we will create a few charts using ChartJS
-         */
-        var areaChartDataMonth = {
-          labels: [1,2,3,4,5,6,7,8,9,10,11,12],
-          datasets: [
-            {
-              label: "Electronics",
-              fillColor: "rgba(210, 0, 0, 1)",
-              strokeColor: "rgba(210, 0, 0, 1)",
-              pointColor: "rgba(210, 0, 0, 1)",
-              pointStrokeColor: "#c1c7d1",
-              pointHighlightFill: "#fff",
-              pointHighlightStroke: "rgba(220,220,220,1)",
-              data: [{counters_1}]
-            }
-          ]
-        };
-        var areaChartDataDay = {
-          labels: [{days}],
-          datasets: [
-            {
-              label: "Electronics",
-              fillColor: "rgba(210, 0, 0, 1)",
-              strokeColor: "rgba(210, 0, 0, 1)",
-              pointColor: "rgba(210, 0, 0, 1)",
-              pointStrokeColor: "#c1c7d1",
-              pointHighlightFill: "#fff",
-              pointHighlightStroke: "rgba(220,220,220,1)",
-              data: [{counters_2}]
+var chartMonth = echarts.init(document.getElementById('chartMonth')); 
+var chartDay = echarts.init(document.getElementById('chartDay')); 
+optionChartMonth = {
+    tooltip: {
+        trigger: 'item'
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            saveAsImage: {show: true}
+        }
+    },
+    calculable: true,
+    grid: {
+        borderWidth: 0,
+        y: 80,
+        y2: 60
+    },
+    xAxis: [
+        {
+            type: 'category',
+            show: true,
+            data: [1,2,3,4,5,6,7,8,9,10,11,12]
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            show: true
+        }
+    ],
+    series: [
+        {
+            name: '月份分布',
+            type: 'bar',
+            itemStyle: {
+                normal: {
+                    color: function(params) {
+                        // build a color map as your need.
+                        var colorList = [
+                            {colors_1}
+                        ];
+                        return colorList[params.dataIndex]
+                    },
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '{c}'
+                    }
+                }
             },
-            {
-              label: "Digital Goods",
-              fillColor: "rgba(60,141,188,0.9)",
-              strokeColor: "rgba(60,141,188,0.8)",
-              pointColor: "#3b8bba",
-              pointStrokeColor: "rgba(60,141,188,1)",
-              pointHighlightFill: "#fff",
-              pointHighlightStroke: "rgba(60,141,188,1)",
-              data: [{proportion_2}]
-            }
-          ]
-        };
-        //-------------
-        //- BAR CHART -
-        //-------------
-        //月份
-        var barChartCanvasMonth = $("#barChartMonth").get(0).getContext("2d");
-        var barChartMonth = new Chart(barChartCanvasMonth);
-        var barChartDataMonth = areaChartDataMonth;
-        //星期
-        var barChartCanvasDay = $("#barChartDay").get(0).getContext("2d");
-        var barChartDay = new Chart(barChartCanvasDay);
-        var barChartDataDay = areaChartDataDay;
-        
-        var barChartOptions = {
-          //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-          scaleBeginAtZero: true,
-          //Boolean - Whether grid lines are shown across the chart
-          scaleShowGridLines: true,
-          //String - Colour of the grid lines
-          scaleGridLineColor: "rgba(0,0,0,.05)",
-          //Number - Width of the grid lines
-          scaleGridLineWidth: 1,
-          //Boolean - Whether to show horizontal lines (except X axis)
-          scaleShowHorizontalLines: true,
-          //Boolean - Whether to show vertical lines (except Y axis)
-          scaleShowVerticalLines: true,
-          //Boolean - If there is a stroke on each bar
-          barShowStroke: true,
-          //Number - Pixel width of the bar stroke
-          barStrokeWidth: 2,
-          //Number - Spacing between each of the X value sets
-          barValueSpacing: 5,
-          //Number - Spacing between data sets within X values
-          barDatasetSpacing: 1,
-          //String - A legend template
-          legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-          //Boolean - whether to make the chart responsive
-          responsive: true,
-          maintainAspectRatio: true
-        };
-        barChartOptions.datasetFill = false;
-        
-        barChartMonth.Bar(barChartDataMonth, barChartOptions);
-        barChartDay.Bar(barChartDataDay, barChartOptions);
-      });
+            data: [364,337,352,342,341,334,362,347,332,332,325,329,349,359,309,343,372,355,332,348,341,348,318,307,331,368,338,320,328,349,319,360,293,115,110,111,101,116,117,108,108,133,113,129,122,121,124,118,118]
+        }
+    ]
+};
+optionChartDay = {
+    tooltip: {
+        trigger: 'item'
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            saveAsImage: {show: true}
+        }
+    },
+    calculable: true,
+    grid: {
+        borderWidth: 0,
+        y: 80,
+        y2: 60
+    },
+    xAxis: [
+        {
+            type: 'category',
+            show: true,
+            data: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            show: true
+        },
+        {
+            type: 'value',
+            splitNumber: 5,
+            axisLabel : {
+                formatter: function (value) {
+                    // Function formatter
+                    return value + '%'
+                }
+            },
+            show: true
+        }
+    ],
+    series: [
+        {
+            name: '月份分布',
+            type: 'bar',
+            itemStyle: {
+                normal: {
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '{c}'
+                    }
+                }
+            },
+            data: [{counters_2}]
+        },
+        {
+            name: '比例',
+            type: 'line',
+            yAxisIndex: 1,
+            data: [{proportion_2}]
+        }
+    ]
+};
+// 为echarts对象加载数据 
+chartMonth.setOption(optionChartMonth);
+chartDay.setOption(optionChartDay);
+
     </script>

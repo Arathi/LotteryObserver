@@ -9,6 +9,8 @@ class LO_Controller extends MY_Controller {
     
     public function __construct(){
         parent::__construct();
+        mt_srand();
+        $this->load->helper('color');
         $this->load->model('draw_result_model');
         $this->__get_counter();
     }

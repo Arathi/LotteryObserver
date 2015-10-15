@@ -8,16 +8,6 @@ class Monthdetail extends LO_Controller {
     
     public function __construct(){
         parent::__construct();
-        mt_srand();
-    }
-    
-    private function random_color()
-    {
-        //$color_str = "#";
-        $color_dec = mt_rand(0x100000,0xffffff);
-        $hex = dechex($color_dec);
-        $color_str = "#" . $hex;
-        return $color_str;
     }
     
     public function __get_content()
@@ -61,7 +51,7 @@ class Monthdetail extends LO_Controller {
             $pie_data[] = array(
                 'label' => $ball,
                 'value' => $redBallCounter[$ball],
-                'color' => $this->random_color()
+                'color' => random_color(0, 128, 0, 128, 0, 128)
             );
         }
         $pie_data_json = json_encode($pie_data);
