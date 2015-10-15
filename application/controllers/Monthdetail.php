@@ -16,46 +16,80 @@ class Monthdetail extends LO_Controller {
             'month' => $this->month
         );
         
-        //月份
-        //$counterArray = array();
-        $redBallCounter = array();
-        $blueBallCounter = array();
-        
-        for ($rb = 1; $rb <= 33; $rb++) $redBallCounter[$rb] = 0;
-        for ($bb = 1; $bb <= 16; $bb++) $blueBallCounter[$bb] = 0;
-        
+        $mCounter = array();
+        for ($index = 1; $index <= 33; $index++) $mCounter[$index] = 0;
+        for ($index = 101; $index <= 116; $index++) $mCounter[$index] = 0; 
         foreach ($this->drawResults as $drawResult)
         {
-            $redBallCounter[ $drawResult->redBall1 ]++;
-            $redBallCounter[ $drawResult->redBall2 ]++;
-            $redBallCounter[ $drawResult->redBall3 ]++;
-            $redBallCounter[ $drawResult->redBall4 ]++;
-            $redBallCounter[ $drawResult->redBall5 ]++;
-            $redBallCounter[ $drawResult->redBall6 ]++;
-            $blueBallCounter[ $drawResult->blueBall ]++;
+            if ($this->month == $drawResult->month)
+            {
+                $mCounter[ $drawResult->redBall1 ]++;
+                $mCounter[ $drawResult->redBall2 ]++;
+                $mCounter[ $drawResult->redBall3 ]++;
+                $mCounter[ $drawResult->redBall4 ]++;
+                $mCounter[ $drawResult->redBall5 ]++;
+                $mCounter[ $drawResult->redBall6 ]++;
+                $mCounter[ $drawResult->blueBall + 100 ]++;
+            }
         }
-        //$counters = '';
-        //for ($month = 1; $month <= 12; $month++)
-        //{
-        //    if ($month!=1) $counters .= ',';
-        //    $counters .= $counterArray[$month];
-        //}
-        //$dataChart1 = array(
-        //    'chart_name_1' => '月份分布',
-        //    'counters_1' => $counters
-        //);
-        //$data = array_merge($data, $dataChart1);
-        $pie_data = array();
-        for ($ball = 1; $ball <= 33; $ball++)
+        
+        //生成标签
+        $labelsRed = '';
+        $labelsBlue = '';
+        $labelsMixed = '';
+        $colors = '';
+        $theory_avg_red = count($this->drawResults) * 6 / 33 / 12;
+        $theory_avg_blue = count($this->drawResults) / 16 / 12;
+        $theory_avg_arr = '';
+        for ($index=1; $index<=33; $index++)
         {
-            $pie_data[] = array(
-                'label' => $ball,
-                'value' => $redBallCounter[$ball],
-                'color' => random_color(0, 128, 0, 128, 0, 128)
-            );
+            if ($index != 1)
+            {
+                $labelsRed .= ',';
+                $colors .= ',';
+                $theory_avg_arr .= ',';
+            }
+            $labelsRed .= $index;
+            $colors .= '\'#a00000\'';
+            $theory_avg_arr .= $theory_avg_red;
         }
-        $pie_data_json = json_encode($pie_data);
-        $data['pie_data_json'] = $pie_data_json;
+        for ($index=1; $index<=16; $index++)
+        {
+            if ($index != 1)
+            {
+                $labelsBlue .= ',';
+            }
+            $labelsBlue .= $index;
+            $colors .= ',\'#0000a0\'';
+            $theory_avg_arr .= ',' . $theory_avg_blue;
+        }
+        $labelsMixed = $labelsRed . ',' . $labelsBlue;
+        //生成频数
+        $countersCSVRed = '';
+        $countersCSVBlue = '';
+        $countersMixed = '';
+        for ($index=1; $index<=33; $index++)
+        {
+            if ($index != 1)
+            {
+                $countersCSVRed .= ',';
+            }
+            $countersCSVRed .= $mCounter[$index];
+        }
+        for ($index=1; $index<=16; $index++)
+        {
+            if ($index != 1)
+            {
+                $countersCSVBlue .= ',';
+            }
+            $countersCSVBlue .= $mCounter[100+$index];
+        }
+        $countersMixed = $countersCSVRed . ',' . $countersCSVBlue;
+        
+        $data['labels'] = $labelsMixed;
+        $data['counters'] = $countersMixed;
+        $data['bar_colors'] = $colors;
+        $data['theory_line'] = $theory_avg_arr;
         
         //解析模板
         return $this->parser->parse('monthdetail_content', $data, TRUE);
